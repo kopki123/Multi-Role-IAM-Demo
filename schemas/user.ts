@@ -5,8 +5,8 @@ const roles: Role[] = ['Admin', 'Editor', 'Viewer'];
 
 export const createUserSchema = z.object({
   name: z.string().min(1, 'Name is required'),
-  email: z.email('Invalid email'),
-  role: z.enum(roles),
+  email: z.email({ error: (issue) => issue.input === '' ? 'Email is required' : 'Invalid email' }),
+  role: z.enum(roles, { error: (issue) => issue.input === undefined ? 'Role is required' : '' }),
 });
 
 export const updateUserSchema = createUserSchema;

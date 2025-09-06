@@ -9,8 +9,8 @@ const emit = defineEmits<{
 }>();
 
 const form = reactive<Partial<CreateUser>>({
-  name: undefined,
-  email: undefined,
+  name: '',
+  email: '',
   role: undefined,
 });
 

@@ -3,7 +3,7 @@ import { PAGINATION } from '~/utils/constants';
 import type { TableColumn } from '@nuxt/ui';
 import type { User, Role } from '~/types/user';
 import { getRoleColor } from '~/utils/role';
-import SearchBar from '~/components/users/SearchBar.vue';
+import UserSearchBar from '~/components/users/UserSearchBar.vue';
 import CreateUserModal from '~/components/users/CreateUserModal.vue';
 import EditUserModal from '~/components/users/EditUserModal.vue';
 import ConfirmModal from '~/components/base/ConfirmModal.vue';
@@ -174,7 +174,7 @@ onMounted(() => {
       User Management
     </h1>
 
-    <SearchBar
+    <UserSearchBar
       @search="handleSearch"
       @reset="handleReset"
     />
