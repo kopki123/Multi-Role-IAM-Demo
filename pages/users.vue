@@ -9,7 +9,6 @@ import EditUserModal from '~/components/users/EditUserModal.vue';
 import ConfirmModal from '~/components/base/ConfirmModal.vue';
 
 const UBadge = resolveComponent('UBadge');
-
 const overlay = useOverlay();
 const toast = useToast();
 const table = useTemplateRef('table');
@@ -20,35 +19,6 @@ const confirmModal = overlay.create(ConfirmModal);
 
 const usersStore = useUsersStore();
 
-const columns: TableColumn<User>[] = [
-  {
-    accessorKey: 'id',
-    header: 'ID',
-  },
-  {
-    accessorKey: 'name',
-    header: 'Name',
-  },
-  {
-    accessorKey: 'email',
-    header: 'Email'
-  },
-  {
-    accessorKey: 'role',
-    header: 'Role',
-    cell: ({ row }) => {
-      const role = row.getValue('role') as Role;
-      const color = getRoleColor(role);
-
-      return h(UBadge, { variant: 'subtle', color, class: 'rounded-full' }, () => role);
-    }
-  },
-  {
-    id: 'action',
-    header: 'Actions',
-  }
-];
-
 const loading = ref(false);
 
 const searchQuery = ref({
@@ -56,11 +26,28 @@ const searchQuery = ref({
   email: '',
 });
 
+const columns: TableColumn<User>[] = [
+  { accessorKey: 'id', header: 'ID' },
+  { accessorKey: 'name', header: 'Name' },
+  { accessorKey: 'email', header: 'Email' },
+  {
+    accessorKey: 'role',
+    header: 'Role',
+    cell: ({ row }) => {
+      const role = row.getValue('role') as Role;
+      const color = getRoleColor(role);
+
+      return h(UBadge, { variant: 'subtle', color }, () => role);
+    }
+  },
+  { id: 'action', header: 'Actions' }
+];
+
 async function handleFetchUsers() {
   loading.value = true;
 
   try {
-    const response = await usersStore.fetchUsers({ ...searchQuery.value, ...usersStore.pagination});
+    const response = await usersStore.fetchUsers({ ...searchQuery.value, ...usersStore.pagination });
 
     loading.value = false;
 
@@ -125,13 +112,11 @@ async function openCreateUserModal() {
 
       if (response?.status === 'error') {
         toast.add({ title: 'Error', description: response.message, color: 'error' });
-
         return;
       }
 
-      toast.add({ title: 'Success', description: response?.message, color: 'success' });
       usersStore.setPagination();
-
+      toast.add({ title: 'Success', description: response?.message, color: 'success' });
       await handleFetchUsers();
 
       createUserModal.close();
@@ -185,7 +170,7 @@ onMounted(() => {
 
 <template>
   <div class="max-h-full flex flex-col">
-    <h1 class="text-2xl font-bold mb-4">
+    <h1 class="mb-4 text-2xl font-bold">
       User Management
     </h1>
 

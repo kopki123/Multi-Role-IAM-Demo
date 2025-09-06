@@ -1,4 +1,3 @@
-
 import { defineStore } from 'pinia';
 import { PAGINATION } from '~/utils/constants';
 import type { User, PaginationQuery, PaginatedResponse } from '~/types/user';
@@ -18,6 +17,7 @@ export const useUsersStore = defineStore('usersStore', {
       this.pagination.pageIndex = pageIndex;
       this.pagination.pageSize = pageSize;
     },
+
     async fetchUsers(query: PaginationQuery = {}) {
       const response = await apiHandler<PaginatedResponse<User>>('/users', {
         method: 'GET',
@@ -36,34 +36,27 @@ export const useUsersStore = defineStore('usersStore', {
       } = response!.data!;
 
       this.users = items;
-      this.pagination = {
-        pageIndex,
-        pageSize,
-        total,
-      };
+      this.pagination = { pageIndex, pageSize, total };
 
       return response;
     },
+
     async createUser(userData: Omit<User, 'id'>) {
-      const response = await apiHandler<User>('/users', {
+      return await apiHandler<User>('/users', {
         method: 'POST',
-        body: userData
+        body: userData,
       });
-
-      return response;
     },
+
     async updateUser(id: number, userData: Partial<Omit<User, 'id'>>) {
-      const response = await apiHandler<User>(`/users/${id}`, {
+      return await apiHandler<User>(`/users/${id}`, {
         method: 'PUT',
-        body: userData
+        body: userData,
       });
-
-      return response;
     },
+
     async deleteUser(id: number) {
-      const response = await apiHandler(`/users/${id}`, { method: 'DELETE' });
-
-      return response;
+      return await apiHandler(`/users/${id}`, { method: 'DELETE' });
     },
-  }
+  },
 });
