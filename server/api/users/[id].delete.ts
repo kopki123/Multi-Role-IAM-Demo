@@ -1,24 +1,18 @@
-import { promises as fs } from 'fs';
-import path from 'path';
-import type { User } from '~/types/user';
 import type { ApiResponse } from '~/types/api';
+import type { User } from '~/types/user';
 import { success, error } from '~/utils/apiResponse';
-
-const filePath = path.resolve('server/mock/users.json');
+import { readUsersFile, writeUsersFile } from '../../utils/userFile';
 
 export default defineEventHandler(async (event): Promise<ApiResponse> => {
   try {
     const id = Number(event.context.params?.id);
-    const data = JSON.parse(await fs.readFile(filePath, 'utf-8'));
+    const data = await readUsersFile();
+    const users = (data.users || []).filter((user: User) => user.id !== id);
 
-    let users = data.users || [];
-
-    users = users.filter((user: User) => user.id !== id);
-
-    await fs.writeFile(filePath, JSON.stringify({ users }, null, 2), 'utf-8');
+    await writeUsersFile(users);
 
     return success(undefined, 'Successfully deleted user');
-  } catch (err) {
+  } catch {
     setResponseStatus(event, 500, 'Failed to delete user');
     return error('Failed to delete user');
   }

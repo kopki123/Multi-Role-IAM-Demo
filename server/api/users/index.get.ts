@@ -1,18 +1,16 @@
-import { promises as fs } from 'fs';
-import path from 'path';
+import type { ApiResponse } from '~/types/api';
 import type { User, PaginatedResponse } from '~/types/user';
 import { success, error } from '~/utils/apiResponse';
-import type { ApiResponse } from '~/types/api';
 import { PAGINATION } from '~/utils/constants';
-
-const filePath = path.resolve('server/mock/users.json');
+import { readUsersFile } from '../../utils/userFile';
 
 export default defineEventHandler(async (event): Promise<ApiResponse<PaginatedResponse<User>>> => {
   try {
     const query = getQuery(event);
     const pageIndex = Number(query?.pageIndex) || PAGINATION.DEFAULT_PAGE;
     const pageSize = Number(query?.pageSize) || PAGINATION.DEFAULT_PAGE_SIZE;
-    const data = JSON.parse(await fs.readFile(filePath, 'utf-8'));
+
+    const data = await readUsersFile();
 
     let users = data.users || [];
 
@@ -35,7 +33,7 @@ export default defineEventHandler(async (event): Promise<ApiResponse<PaginatedRe
     };
 
     return success(response, 'Successfully retrieved user list');
-  } catch (err) {
+  } catch {
     setResponseStatus(event, 500, 'Failed to retrieve user list');
     throw error('Failed to retrieve user list');
   }

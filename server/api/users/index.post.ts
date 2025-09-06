@@ -1,25 +1,22 @@
-import { promises as fs } from 'fs';
-import path from 'path';
 import * as z from 'zod';
 import { createUserSchema } from '~/schemas/user';
 import type { User } from '~/types/user';
 import type { ApiResponse } from '~/types/api';
 import { success, error } from '~/utils/apiResponse';
-
-const filePath = path.resolve('server/mock/users.json');
+import { readUsersFile, writeUsersFile } from '../../utils/userFile';
 
 export default defineEventHandler(async (event): Promise<ApiResponse<User>> => {
   try {
     const body = await readBody(event);
     const validatedData = createUserSchema.parse(body);
 
-    const data = JSON.parse(await fs.readFile(filePath, 'utf-8'));
+    const data = await readUsersFile();
     const users = data.users || [];
     const newUser = { id: Date.now(), ...validatedData };
 
     users.unshift(newUser);
 
-    await fs.writeFile(filePath, JSON.stringify({ users }, null, 2), 'utf-8');
+    await writeUsersFile(users);
 
     return success(newUser, 'Successfully added user');
   } catch (err) {
