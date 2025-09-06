@@ -14,7 +14,7 @@
 
 ## 環境需求
 
-- Node.js 18+
+- Node.js 22+
 - npm
 
 如需環境變數，請複製 `.env.example` 為 `.env` 並依需要調整。
@@ -38,6 +38,7 @@ npm run dev
 ```
 
 主要頁面：
+
 - 首頁：`/`
 - 使用者管理：`/users`
 
@@ -57,4 +58,4 @@ npm run build
 node .output/server/index.mjs
 ```
 
-訪問 `http://[::]:3000`
+訪問 `http://127.0.0.1:3000` (`http://[::]:3000`)
