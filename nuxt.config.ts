@@ -12,7 +12,14 @@ export default defineNuxtConfig({
     '@nuxt/scripts',
     '@nuxt/ui',
     '@pinia/nuxt',
+    '@nuxt/fonts',
   ],
+  fonts: {
+    families: [
+      { name: 'Inter', provider: 'google' },
+      { name: 'Noto Sans TC', provider: 'google' },
+    ],
+  },
   css: ['~/assets/css/main.css'],
   runtimeConfig: {
     // Public keys that are exposed to the client
