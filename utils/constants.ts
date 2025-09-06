@@ -4,4 +4,4 @@ export const PAGINATION = {
   DEFAULT_PAGE: 1 as number,
 } as const;
 
-export type PaginationConstants = typeof PAGINATION
+export type PaginationConstants = typeof PAGINATION;

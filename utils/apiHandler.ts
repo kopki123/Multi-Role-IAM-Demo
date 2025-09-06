@@ -7,13 +7,11 @@ export async function apiHandler<T>(
   const { $api } = useNuxtApp();
 
   try {
-    const response = await $api<ApiResponse<T>>(url, options);
-
-    return response;
+    return await $api<ApiResponse<T>>(url, options);
   } catch (err) {
     return {
       status: 'error',
-      message: err as string || 'Unknown error',
+      message: (err as string) || 'Unknown error',
     };
   }
 }

@@ -52,7 +52,6 @@ function onSubmit() {
         <UButton
           type="submit"
           color="secondary"
-          class="text-end"
         >
           Submit
         </UButton>

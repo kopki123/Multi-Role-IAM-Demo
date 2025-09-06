@@ -62,7 +62,12 @@ function ToggleMenu() {
       v-for="({ path, label, icon }) in menu"
       :key="path"
       :to="path"
-      class="space-y-1 flex items-center h-16 -mx-4 px-4 py-2 transition-colors duration-200"
+      class="
+        space-y-1 flex items-center
+        h-16
+        -mx-4 px-4 py-2
+        transition-colors duration-200
+      "
       :class="{
         'bg-gray-100 border-r-4 border-secondary text-secondary': $route.path === path
       }"

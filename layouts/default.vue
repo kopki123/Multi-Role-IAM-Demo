@@ -4,12 +4,7 @@ import Sidebar from '~/components/layout/Sidebar.vue';
 </script>
 
 <template>
-  <div
-    class="
-      flex
-      w-screen h-screen
-    "
-  >
+  <div class="flex w-screen h-screen">
     <Sidebar />
 
     <div class="flex-1 p-8 bg-gray-50">
@@ -17,7 +12,3 @@ import Sidebar from '~/components/layout/Sidebar.vue';
     </div>
   </div>
 </template>
-
-
-
-
