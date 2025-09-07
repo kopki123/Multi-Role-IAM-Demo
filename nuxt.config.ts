@@ -37,7 +37,7 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       apiBase: process.env.NUXT_PUBLIC_API_BASE || '/api',
-      apiTimeout: Number(process.env.API_TIMEOUT) || 10000,
+      apiTimeout: Number(process.env.API_TIMEOUT) || 30000,
     },
   },
 });

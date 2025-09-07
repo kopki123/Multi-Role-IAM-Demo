@@ -31,7 +31,7 @@ const range = computed(() => {
   const end = Math.min(pageIndex * pageSize, total);
 
   return { start, end, total };
-})
+});
 
 const columns: TableColumn<User>[] = [
   { accessorKey: 'id', header: 'ID' },
@@ -47,16 +47,17 @@ const columns: TableColumn<User>[] = [
       return h(UBadge, { variant: 'subtle', color }, () => role);
     }
   },
-  { id: 'action', header: 'Actions' }
+  { id: 'action', header: 'Actions' },
 ];
 
 async function handleFetchUsers() {
   loading.value = true;
 
   try {
-    const response = await usersStore.fetchUsers({ ...searchQuery.value, ...usersStore.pagination });
-
-    loading.value = false;
+    const response = await usersStore.fetchUsers({
+      ...searchQuery.value,
+      ...usersStore.pagination,
+    });
 
     if (response?.status === 'error') {
       useAppToast().error(response.message);
@@ -70,21 +71,22 @@ async function handleFetchUsers() {
 
     return response;
   } catch (error) {
-    loading.value = false;
     throw error;
+  } finally {
+    loading.value = false;
   }
 }
 
 async function handleSearch(value: { name: string; email: string }) {
   const previousPageIndex = usersStore.pagination.pageIndex;
-  const previousSearchQuery = searchQuery.value;
-
-  usersStore.setPagination();
-  searchQuery.value = value;
+  const previousSearchQuery = { ...searchQuery.value };
 
   try {
+    usersStore.setPagination();
+    searchQuery.value = { ...value };
+
     await handleFetchUsers();
-  } catch {
+  } catch (error) {
     usersStore.setPagination(previousPageIndex);
     searchQuery.value = previousSearchQuery;
   }
@@ -101,13 +103,16 @@ async function handleReset() {
 }
 
 async function handlePageChange(newPageIndex: number) {
+  if (newPageIndex === usersStore.pagination.pageIndex) {
+    return;
+  }
+
   const previousPageIndex = usersStore.pagination.pageIndex;
 
-  usersStore.setPagination(newPageIndex);
-
   try {
+    usersStore.setPagination(newPageIndex);
     await handleFetchUsers();
-  } catch {
+  } catch (error) {
     usersStore.setPagination(previousPageIndex);
   }
 }
