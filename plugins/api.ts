@@ -9,14 +9,10 @@ export default defineNuxtPlugin(() => {
     },
     onResponseError({ response }) {
       if (response._data) {
-        return Promise.reject(`
-          [API Error] ${response.status}： ${response._data.message}`
-        );
+        return Promise.reject(`[API Error] ${response._data.message}`);
       }
 
-      return Promise.reject(
-        `[API Error] ${response.status}： ${response.statusText}`
-      );
+      return Promise.reject(`[API Error] ${response.statusText}`);
     },
   });
 

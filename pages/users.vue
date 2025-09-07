@@ -10,7 +10,6 @@ import ConfirmModal from '~/components/base/ConfirmModal.vue';
 
 const UBadge = resolveComponent('UBadge');
 const overlay = useOverlay();
-const toast = useToast();
 const table = useTemplateRef('table');
 
 const createUserModal = overlay.create(CreateUserModal);
@@ -25,6 +24,14 @@ const searchQuery = ref({
   name: '',
   email: '',
 });
+
+const range = computed(() => {
+  const { pageIndex, pageSize, total } = usersStore.pagination;
+  const start = (pageIndex - 1) * pageSize + 1;
+  const end = Math.min(pageIndex * pageSize, total);
+
+  return { start, end, total };
+})
 
 const columns: TableColumn<User>[] = [
   { accessorKey: 'id', header: 'ID' },
@@ -52,7 +59,7 @@ async function handleFetchUsers() {
     loading.value = false;
 
     if (response?.status === 'error') {
-      toast.add({ title: 'Error', description: response.message, color: 'error' });
+      useAppToast().error(response.message);
       throw new Error(response.message);
     }
 
@@ -111,12 +118,12 @@ async function openCreateUserModal() {
       const response = await usersStore.createUser(user as Omit<User, 'id'>);
 
       if (response?.status === 'error') {
-        toast.add({ title: 'Error', description: response.message, color: 'error' });
+        useAppToast().error(response.message);
         return;
       }
 
       usersStore.setPagination();
-      toast.add({ title: 'Success', description: response?.message, color: 'success' });
+      useAppToast().success(response?.message);
       await handleFetchUsers();
 
       createUserModal.close();
@@ -131,11 +138,11 @@ async function openEditUserModal(user: User) {
       const response = await usersStore.updateUser(user.id, updatedUser);
 
       if (response?.status === 'error') {
-        toast.add({ title: 'Error', description: response.message, color: 'error' });
+        useAppToast().error(response.message);
         return;
       }
 
-      toast.add({ title: 'Success', description: response?.message, color: 'success' });
+      useAppToast().success(response?.message);
       await handleFetchUsers();
 
       editUserModal.close();
@@ -150,11 +157,11 @@ async function openDeleteUserModal(user: User) {
       const response = await usersStore.deleteUser(user.id);
 
       if (response?.status === 'error') {
-        toast.add({ title: 'Error', description: response.message, color: 'error' });
+        useAppToast().error(response.message);
         return;
       }
 
-      toast.add({ title: 'Success', description: response?.message, color: 'success' });
+      useAppToast().success(response?.message);
       await handleFetchUsers();
 
       confirmModal.close();
@@ -169,7 +176,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="max-h-full flex flex-col">
+  <div class="max-h-full flex flex-col space-y-6">
     <h1 class="mb-4 text-2xl font-bold">
       User Management
     </h1>
@@ -203,14 +210,14 @@ onMounted(() => {
         <div class="flex items-center gap-2">
           <UButton
             icon="material-symbols:edit"
-            color="neutral"
+            color="secondary"
             variant="ghost"
             @click="openEditUserModal(row.original)"
           />
 
           <UButton
             icon="material-symbols:delete"
-            color="neutral"
+            color="error"
             variant="ghost"
             @click="openDeleteUserModal(row.original)"
           />
@@ -218,7 +225,11 @@ onMounted(() => {
       </template>
     </UTable>
 
-    <div class="flex justify-end mt-8">
+    <div class="flex items-center justify-between mt-8">
+      <div class="text-sm text-muted">
+        Showing {{ range.start }} to {{ range.end }} of {{ range.total }} results
+      </div>
+
       <UPagination
         color="secondary"
         active-color="secondary"

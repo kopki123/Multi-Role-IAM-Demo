@@ -1,4 +1,3 @@
-import * as z from 'zod';
 import { createUserSchema } from '~/schemas/user';
 import type { User } from '~/types/user';
 import type { ApiResponse } from '~/types/api';
@@ -20,16 +19,6 @@ export default defineEventHandler(async (event): Promise<ApiResponse<User>> => {
 
     return success(newUser, 'Successfully added user');
   } catch (err) {
-    if (err instanceof z.ZodError) {
-      setResponseStatus(event, 400, 'Failed to add user');
-      throw error('Failed to add user', {
-        issues: err.issues.map(issue => ({
-          field: issue.path.join('.'),
-          message: issue.message
-        }))
-      });
-    }
-
     setResponseStatus(event, 500, 'Failed to add user');
     throw error('Failed to add user');
   }

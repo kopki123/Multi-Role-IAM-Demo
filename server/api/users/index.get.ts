@@ -34,7 +34,7 @@ export default defineEventHandler(async (event): Promise<ApiResponse<PaginatedRe
 
     return success(response, 'Successfully retrieved user list');
   } catch {
-    setResponseStatus(event, 500, 'Failed to retrieve user list');
-    throw error('Failed to retrieve user list');
+    setResponseStatus(event, 500, 'Failed to retrieved user list');
+    throw error('Failed to retrieved user list');
   }
 });

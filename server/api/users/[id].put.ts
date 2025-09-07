@@ -1,4 +1,3 @@
-import * as z from 'zod';
 import { updateUserSchema } from '~/schemas/user';
 import type { ApiResponse } from '~/types/api';
 import type { User } from '~/types/user';
@@ -26,17 +25,7 @@ export default defineEventHandler(async (event): Promise<ApiResponse<User>> => {
     await writeUsersFile(users);
 
     return success(newUser, 'Successfully updated user');
-  } catch (err) {
-    if (err instanceof z.ZodError) {
-      setResponseStatus(event, 400, 'Failed to update user');
-      throw error('Failed to update user', {
-        issues: err.issues.map(issue => ({
-          field: issue.path.join('.'),
-          message: issue.message
-        }))
-      });
-    }
-
+  } catch {
     setResponseStatus(event, 500, 'Failed to update user');
     throw error('Failed to update user');
   }
