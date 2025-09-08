@@ -7,6 +7,7 @@ withDefaults(defineProps<{
   confirmText?: string
   cancelText?: string
   confirmColor?: ButtonProps['color']
+  isLoading?: boolean
 }>(), {
   title: 'Confirm Action',
   message: 'Are you sure you want to perform this action?',
@@ -38,6 +39,8 @@ const emit = defineEmits<{
 
       <UButton
         :color="confirmColor"
+        :loading="isLoading"
+        :disabled="isLoading"
         @click="emit('confirm')"
       >
         {{ confirmText }}

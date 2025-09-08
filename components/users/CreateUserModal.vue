@@ -3,6 +3,10 @@ import { createUserSchema } from '~/schemas/user';
 import type { CreateUser } from '~/schemas/user';
 import { ROLE_OPTIONS } from '~/utils/role';
 
+defineProps<{
+  isLoading: boolean,
+}>();
+
 const emit = defineEmits<{
   (e: 'close'): void,
   (e: 'submit', data: CreateUser): void
@@ -47,6 +51,8 @@ function onSubmit() {
         <UButton
           type="submit"
           color="secondary"
+          :loading="isLoading"
+          :disabled="isLoading"
         >
           Submit
         </UButton>

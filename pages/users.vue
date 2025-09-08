@@ -14,7 +14,7 @@ const table = useTemplateRef('table');
 
 const createUserModal = overlay.create(CreateUserModal);
 const editUserModal = overlay.create(EditUserModal);
-const confirmModal = overlay.create(ConfirmModal);
+const deleteUserConfirmModal = overlay.create(ConfirmModal);
 
 const usersStore = useUsersStore();
 
@@ -31,7 +31,7 @@ const range = computed(() => {
   const end = Math.min(pageIndex * pageSize, total);
 
   return { start, end, total };
-});
+})
 
 const columns: TableColumn<User>[] = [
   { accessorKey: 'id', header: 'ID' },
@@ -45,7 +45,7 @@ const columns: TableColumn<User>[] = [
       const color = getRoleColor(role);
 
       return h(UBadge, { variant: 'subtle', color }, () => role);
-    }
+    },
   },
   { id: 'action', header: 'Actions' },
 ];
@@ -77,7 +77,7 @@ async function handleFetchUsers() {
   }
 }
 
-async function handleSearch(value: { name: string; email: string }) {
+async function handleSearch(value: { name: string, email: string }) {
   const previousPageIndex = usersStore.pagination.pageIndex;
   const previousSearchQuery = { ...searchQuery.value };
 
@@ -119,6 +119,7 @@ async function handlePageChange(newPageIndex: number) {
 
 async function openCreateUserModal() {
   createUserModal.open({
+    isLoading: isLoading.value,
     onSubmit: async (user) => {
       if (isLoading.value) {
         return;
@@ -126,6 +127,7 @@ async function openCreateUserModal() {
 
       try {
         isLoading.value = true;
+        createUserModal.patch({ isLoading: isLoading.value });
 
         const response = await usersStore.createUser(user as Omit<User, 'id'>);
 
@@ -141,14 +143,16 @@ async function openCreateUserModal() {
         await handleFetchUsers();
       } finally {
         isLoading.value = false;
+        createUserModal.patch({ isLoading: isLoading.value });
       }
-    }
+    },
   });
 }
 
 async function openEditUserModal(user: User) {
   editUserModal.open({
     user,
+    isLoading: isLoading.value,
     onSubmit: async (updatedUser) => {
       if (isLoading.value) {
         return;
@@ -156,6 +160,7 @@ async function openEditUserModal(user: User) {
 
       try {
         isLoading.value = true;
+        editUserModal.patch({ isLoading: isLoading.value });
 
         const response = await usersStore.updateUser(user.id, updatedUser);
 
@@ -170,22 +175,23 @@ async function openEditUserModal(user: User) {
         await handleFetchUsers();
       } finally {
         isLoading.value = false;
+        editUserModal.patch({ isLoading: isLoading.value });
       }
     },
   });
 }
 
 async function openDeleteUserModal(user: User) {
-  confirmModal.open({
+  deleteUserConfirmModal.open({
     confirmColor: 'error',
     onConfirm: async () => {
       if (isLoading.value) {
         return;
       }
 
-
       try {
         isLoading.value = true;
+        deleteUserConfirmModal.patch({ isLoading: isLoading.value });
 
         const response = await usersStore.deleteUser(user.id);
 
@@ -195,20 +201,20 @@ async function openDeleteUserModal(user: User) {
         }
 
         useAppToast().success(response?.message);
-        confirmModal.close();
+        deleteUserConfirmModal.close();
 
         await handleFetchUsers();
       } finally {
         isLoading.value = false;
+        deleteUserConfirmModal.patch({ isLoading: isLoading.value });
       }
-    }
+    },
   });
 }
 
 onMounted(() => {
   handleFetchUsers();
 });
-
 </script>
 
 <template>

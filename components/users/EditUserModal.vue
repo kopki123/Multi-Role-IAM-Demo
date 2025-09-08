@@ -5,7 +5,8 @@ import type { UpdateUser } from '~/schemas/user';
 import { ROLE_OPTIONS } from '~/utils/role';
 
 const props = defineProps<{
-  user?: User
+  user?: User,
+  isLoading: boolean,
 }>();
 
 const emit = defineEmits<{
@@ -52,6 +53,8 @@ function onSubmit() {
         <UButton
           type="submit"
           color="secondary"
+          :loading="isLoading"
+          :disabled="isLoading"
         >
           Submit
         </UButton>
