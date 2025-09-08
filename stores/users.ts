@@ -37,7 +37,7 @@ export const useUsersStore = defineStore('usersStore', {
 
       this.users = items;
       this.pagination = { pageIndex, pageSize };
-      this.total;
+      this.total = total;
 
       return response;
     },
