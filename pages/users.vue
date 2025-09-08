@@ -18,7 +18,7 @@ const confirmModal = overlay.create(ConfirmModal);
 
 const usersStore = useUsersStore();
 
-const loading = ref(false);
+const isLoading = ref(false);
 
 const searchQuery = ref({
   name: '',
@@ -51,7 +51,7 @@ const columns: TableColumn<User>[] = [
 ];
 
 async function handleFetchUsers() {
-  loading.value = true;
+  isLoading.value = true;
 
   try {
     const response = await usersStore.fetchUsers({
@@ -73,7 +73,7 @@ async function handleFetchUsers() {
   } catch (error) {
     throw error;
   } finally {
-    loading.value = false;
+    isLoading.value = false;
   }
 }
 
@@ -120,12 +120,12 @@ async function handlePageChange(newPageIndex: number) {
 async function openCreateUserModal() {
   createUserModal.open({
     onSubmit: async (user) => {
-      if (loading.value) {
+      if (isLoading.value) {
         return;
       }
 
       try {
-        loading.value = true;
+        isLoading.value = true;
 
         const response = await usersStore.createUser(user as Omit<User, 'id'>);
 
@@ -140,7 +140,7 @@ async function openCreateUserModal() {
 
         await handleFetchUsers();
       } finally {
-        loading.value = false;
+        isLoading.value = false;
       }
     }
   });
@@ -150,12 +150,12 @@ async function openEditUserModal(user: User) {
   editUserModal.open({
     user,
     onSubmit: async (updatedUser) => {
-      if (loading.value) {
+      if (isLoading.value) {
         return;
       }
 
       try {
-        loading.value = true;
+        isLoading.value = true;
 
         const response = await usersStore.updateUser(user.id, updatedUser);
 
@@ -169,7 +169,7 @@ async function openEditUserModal(user: User) {
 
         await handleFetchUsers();
       } finally {
-        loading.value = false;
+        isLoading.value = false;
       }
     },
   });
@@ -179,13 +179,13 @@ async function openDeleteUserModal(user: User) {
   confirmModal.open({
     confirmColor: 'error',
     onConfirm: async () => {
-      if (loading.value) {
+      if (isLoading.value) {
         return;
       }
 
 
       try {
-        loading.value = true;
+        isLoading.value = true;
 
         const response = await usersStore.deleteUser(user.id);
 
@@ -199,7 +199,7 @@ async function openDeleteUserModal(user: User) {
 
         await handleFetchUsers();
       } finally {
-        loading.value = false;
+        isLoading.value = false;
       }
     }
   });
@@ -237,7 +237,7 @@ onMounted(() => {
       sticky
       :data="usersStore.users"
       :columns="columns"
-      :loading="loading"
+      :loading="isLoading"
       loading-animation="swing"
       loading-color="secondary"
       class="flex-1"
