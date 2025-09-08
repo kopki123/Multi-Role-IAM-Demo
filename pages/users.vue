@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { PAGINATION } from '~/utils/constants';
 import type { TableColumn } from '@nuxt/ui';
 import type { User, Role } from '~/types/user';
-import { getRoleColor } from '~/utils/role';
 import UserSearchBar from '~/components/users/UserSearchBar.vue';
 import CreateUserModal from '~/components/users/CreateUserModal.vue';
 import EditUserModal from '~/components/users/EditUserModal.vue';
 import ConfirmModal from '~/components/base/ConfirmModal.vue';
+import { getRoleColor } from '~/utils/role';
+import { PAGINATION } from '~/utils/constants';
+
 
 const UBadge = resolveComponent('UBadge');
 const overlay = useOverlay();
@@ -19,14 +20,14 @@ const deleteUserConfirmModal = overlay.create(ConfirmModal);
 const usersStore = useUsersStore();
 
 const isLoading = ref(false);
-
 const searchQuery = ref({
   name: '',
   email: '',
 });
 
 const range = computed(() => {
-  const { pageIndex, pageSize, total } = usersStore.pagination;
+  const { pageIndex, pageSize } = usersStore.pagination;
+  const total = usersStore.total;
   const start = (pageIndex - 1) * pageSize + 1;
   const end = Math.min(pageIndex * pageSize, total);
 
@@ -278,7 +279,7 @@ onMounted(() => {
         :default-page="PAGINATION.DEFAULT_PAGE"
         :page="usersStore.pagination.pageIndex"
         :items-per-page="usersStore.pagination.pageSize"
-        :total="usersStore.pagination.total"
+        :total="usersStore.total"
         @update:page="(page: number) => handlePageChange(page)"
       />
     </div>

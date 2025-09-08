@@ -9,8 +9,8 @@ export const useUsersStore = defineStore('usersStore', {
     pagination: {
       pageIndex: PAGINATION.DEFAULT_PAGE,
       pageSize: PAGINATION.DEFAULT_PAGE_SIZE,
-      total: 0,
     },
+    total: 0,
   }),
   actions: {
     setPagination(pageIndex = PAGINATION.DEFAULT_PAGE, pageSize = PAGINATION.DEFAULT_PAGE_SIZE) {
@@ -36,7 +36,8 @@ export const useUsersStore = defineStore('usersStore', {
       } = response!.data!;
 
       this.users = items;
-      this.pagination = { pageIndex, pageSize, total };
+      this.pagination = { pageIndex, pageSize };
+      this.total;
 
       return response;
     },
