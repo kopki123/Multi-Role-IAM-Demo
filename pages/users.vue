@@ -120,18 +120,28 @@ async function handlePageChange(newPageIndex: number) {
 async function openCreateUserModal() {
   createUserModal.open({
     onSubmit: async (user) => {
-      const response = await usersStore.createUser(user as Omit<User, 'id'>);
-
-      if (response?.status === 'error') {
-        useAppToast().error(response.message);
+      if (loading.value) {
         return;
       }
 
-      usersStore.setPagination();
-      useAppToast().success(response?.message);
-      await handleFetchUsers();
+      try {
+        loading.value = true;
 
-      createUserModal.close();
+        const response = await usersStore.createUser(user as Omit<User, 'id'>);
+
+        if (response?.status === 'error') {
+          useAppToast().error(response.message);
+          return;
+        }
+
+        usersStore.setPagination();
+        useAppToast().success(response?.message);
+        createUserModal.close();
+
+        await handleFetchUsers();
+      } finally {
+        loading.value = false;
+      }
     }
   });
 }
@@ -140,17 +150,27 @@ async function openEditUserModal(user: User) {
   editUserModal.open({
     user,
     onSubmit: async (updatedUser) => {
-      const response = await usersStore.updateUser(user.id, updatedUser);
-
-      if (response?.status === 'error') {
-        useAppToast().error(response.message);
+      if (loading.value) {
         return;
       }
 
-      useAppToast().success(response?.message);
-      await handleFetchUsers();
+      try {
+        loading.value = true;
 
-      editUserModal.close();
+        const response = await usersStore.updateUser(user.id, updatedUser);
+
+        if (response?.status === 'error') {
+          useAppToast().error(response.message);
+          return;
+        }
+
+        useAppToast().success(response?.message);
+        editUserModal.close();
+
+        await handleFetchUsers();
+      } finally {
+        loading.value = false;
+      }
     },
   });
 }
@@ -159,17 +179,28 @@ async function openDeleteUserModal(user: User) {
   confirmModal.open({
     confirmColor: 'error',
     onConfirm: async () => {
-      const response = await usersStore.deleteUser(user.id);
-
-      if (response?.status === 'error') {
-        useAppToast().error(response.message);
+      if (loading.value) {
         return;
       }
 
-      useAppToast().success(response?.message);
-      await handleFetchUsers();
 
-      confirmModal.close();
+      try {
+        loading.value = true;
+
+        const response = await usersStore.deleteUser(user.id);
+
+        if (response?.status === 'error') {
+          useAppToast().error(response.message);
+          return;
+        }
+
+        useAppToast().success(response?.message);
+        confirmModal.close();
+
+        await handleFetchUsers();
+      } finally {
+        loading.value = false;
+      }
     }
   });
 }
