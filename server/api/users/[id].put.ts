@@ -24,7 +24,7 @@ export default defineEventHandler(async (event): Promise<ApiResponse<User>> => {
 
     await writeUsersFile(users);
 
-    return success(newUser, 'Successfully updated user');
+    return success('Successfully updated user', newUser);
   } catch {
     setResponseStatus(event, 500, 'Failed to update user');
     throw error('Failed to update user');

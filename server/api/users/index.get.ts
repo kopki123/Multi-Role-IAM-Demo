@@ -32,7 +32,7 @@ export default defineEventHandler(async (event): Promise<ApiResponse<PaginatedRe
       pageSize,
     };
 
-    return success(response, 'Successfully retrieved user list');
+    return success('Successfully retrieved user list', response);
   } catch {
     setResponseStatus(event, 500, 'Failed to retrieved user list');
     throw error('Failed to retrieved user list');

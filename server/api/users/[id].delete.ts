@@ -11,7 +11,7 @@ export default defineEventHandler(async (event): Promise<ApiResponse> => {
 
     await writeUsersFile(users);
 
-    return success(undefined, 'Successfully deleted user');
+    return success('Successfully deleted user', undefined);
   } catch {
     setResponseStatus(event, 500, 'Failed to delete user');
     throw error('Failed to delete user');

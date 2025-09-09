@@ -8,7 +8,6 @@ import ConfirmModal from '~/components/base/ConfirmModal.vue';
 import { getRoleColor } from '~/utils/role';
 import { PAGINATION } from '~/utils/constants';
 
-
 const UBadge = resolveComponent('UBadge');
 const overlay = useOverlay();
 const table = useTemplateRef('table');

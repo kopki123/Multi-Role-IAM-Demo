@@ -1,7 +1,7 @@
 import type { ApiResponse } from '~/types/api';
 
 // 成功回覆
-export function success<T>(data?: T, message = 'success'): ApiResponse<T> {
+export function success<T>(message = 'success', data?: T): ApiResponse<T> {
   return { status: 'success', message, data };
 }
 

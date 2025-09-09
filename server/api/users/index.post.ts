@@ -17,7 +17,7 @@ export default defineEventHandler(async (event): Promise<ApiResponse<User>> => {
 
     await writeUsersFile(users);
 
-    return success(newUser, 'Successfully added user');
+    return success('Successfully added user', newUser);
   } catch (err) {
     setResponseStatus(event, 500, 'Failed to add user');
     throw error('Failed to add user');
